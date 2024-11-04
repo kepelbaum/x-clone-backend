@@ -20,16 +20,25 @@ public class Post {
 
     private Integer ifreply;
 
+    private Integer ifretweet;
+
+    private String media_url;
+
+    private String media_type;
+
     public Post() {
 
     }
 
-    public Post(Integer post_id, String username, String content, Date date, Integer ifreply) {
+    public Post(Integer post_id, String username, String content, Date date, Integer ifreply, Integer ifretweet, String media_url, String media_type) {
         this.post_id = post_id;
         this.username = username;
         this.content = content;
         this.date = date;
         this.ifreply = ifreply;
+        this.ifretweet = ifretweet;
+        this.media_url = media_url;
+        this.media_type = media_type;
     }
 
     public Integer getPost_id() {
@@ -71,4 +80,16 @@ public class Post {
     public void setIfReply(Integer ifReply) {
         this.ifreply = ifreply;
     }
+
+    public Integer getIfretweet() {return ifretweet;}
+
+    public void setIfretweet(Integer ifretweet) {this.ifretweet = ifretweet;}
+
+    public String getMedia_url() {return media_url;}
+
+    public void setMedia_url(String media_url) {this.media_url = media_url;}
+
+    public String getMedia_type() {return media_type;}
+
+    public void setMedia_type(String media_type) {this.media_type = media_type;}
 }

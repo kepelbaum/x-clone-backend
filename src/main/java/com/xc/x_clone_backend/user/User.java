@@ -1,5 +1,6 @@
 package com.xc.x_clone_backend.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,24 +15,28 @@ public class    User {
 
     private String avatar;
 
+    private String background;
+
     private String aboutme;
 
     private String location;
 
     private Boolean ifcheckmark;
 
+    @JsonIgnore
     private String password;
 
     public User() {
     }
 
-    public User(String username, String avatar, String aboutme, String location, Boolean ifcheckmark, String password) {
+    public User(String username, String avatar, String aboutme, String location, Boolean ifcheckmark, String password, String background) {
         this.username = username;
         this.avatar = avatar;
         this.aboutme = aboutme;
         this.location = location;
         this.ifcheckmark = ifcheckmark;
         this.password = password;
+        this.background = background;
     }
 
     public String getUsername() {
@@ -76,6 +81,14 @@ public class    User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public void setPassword(String password) {
