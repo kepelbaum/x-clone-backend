@@ -25,9 +25,9 @@ public class MessageService {
 //    }
 
     public List<Message> getMessagesByUsername(String username) {
-        User user = userService.getUserById(username);
+//        User user = userService.getUserById(username);
         return messageRepository.findAll().stream()
-                .filter(Message -> user.equals(Message.getSender()) || user.equals(Message.getRecipient()))
+                .filter(Message -> username.equals(Message.getSender()) || username.equals(Message.getRecipient()))
                 .collect(Collectors.toList());
     }
 

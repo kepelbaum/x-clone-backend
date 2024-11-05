@@ -24,7 +24,7 @@
             return postRepository.findAll().stream()
                     .filter(post -> user.equals(post.getUsername()) && post.getIfreply() == null)
                     .collect(Collectors.toList());
-        }
+        }   
 
         public Post getPostById(Integer id) {
             return postRepository.findAll().stream()
@@ -43,15 +43,6 @@
             return post;
         }
 
-    //    public Post updatePost(Post updatedPost) {
-    //        Optional<Post> existingPost = postRepository.findByPostId(updatedPost.getPost_id());
-    //
-    //        if (existingPost.isPresent()) {
-    //            Post postToUpdate = existingPost.get();
-    //            postToUpdate.setUsername(updatedPost.getUsername());
-    //
-    //        }
-    //    }
         public void deletePost(Integer id) {
             postRepository.deleteById(id);
         }

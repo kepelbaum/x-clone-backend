@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +44,35 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(User user) {
+        validateUsername(user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setDisplayname(user.getUsername());
+        user.setDate(new Date());
         return userRepository.save(user);
+    }
+
+    private void validateUsername(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
+
+        if (username.length() > 15) {
+            throw new IllegalArgumentException("Username must not exceed 15 characters");
+        }
+
+        if (!username.matches("^[A-Za-z0-9_]+$")) {
+            throw new IllegalArgumentException("Username can only contain letters, numbers, and underscores");
+        }
+    }
+
+    private void validateDisplayname(String username) {
+        if (username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
+
+        if (username.length() > 50) {
+            throw new IllegalArgumentException("Username must not exceed 50 characters");
+        }
     }
 
     public User updateUser(User updatedUser) {
@@ -52,11 +80,14 @@ public class UserService implements UserDetailsService {
 
         if (existingUser.isPresent()) {
             User userToUpdate = existingUser.get();
+            validateDisplayname(userToUpdate.getDisplayname());
             if (updatedUser.getAboutme() != null) userToUpdate.setAboutme(updatedUser.getAboutme());
             if (updatedUser.getAvatar() != null) userToUpdate.setAvatar(updatedUser.getAvatar());
             if (updatedUser.getLocation() != null) userToUpdate.setLocation(updatedUser.getLocation());
             if (updatedUser.getIfcheckmark() != null) userToUpdate.setIfcheckmark(updatedUser.getIfcheckmark());
             if (updatedUser.getPassword() != null) userToUpdate.setPassword(passwordEncoder.encode(updatedUser.getPassword()));;
+            if (updatedUser.getBackground() != null) userToUpdate.setBackground(updatedUser.getBackground());
+            if (updatedUser.getDisplayname() != null) userToUpdate.setDisplayname(updatedUser.getDisplayname());
 
             userRepository.save(userToUpdate);
             return userToUpdate;

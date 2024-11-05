@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "users")
 public class    User {
@@ -23,13 +25,17 @@ public class    User {
 
     private Boolean ifcheckmark;
 
+    private String displayname;
+
+    private Date date;
+
     @JsonIgnore
     private String password;
 
     public User() {
     }
 
-    public User(String username, String avatar, String aboutme, String location, Boolean ifcheckmark, String password, String background) {
+    public User(String username, String avatar, String aboutme, String location, Boolean ifcheckmark, String password, String background, String displayname, Date date) {
         this.username = username;
         this.avatar = avatar;
         this.aboutme = aboutme;
@@ -37,6 +43,8 @@ public class    User {
         this.ifcheckmark = ifcheckmark;
         this.password = password;
         this.background = background;
+        this.displayname = displayname;
+        this.date = date;
     }
 
     public String getUsername() {
@@ -89,6 +97,22 @@ public class    User {
 
     public void setBackground(String background) {
         this.background = background;
+    }
+
+    public String getDisplayname() {
+        return displayname;
+    }
+
+    public void setDisplayname(String displayname) {
+        this.displayname = displayname;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public void setPassword(String password) {
