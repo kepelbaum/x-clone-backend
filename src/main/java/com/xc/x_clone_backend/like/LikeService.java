@@ -1,5 +1,5 @@
 package com.xc.x_clone_backend.like;
-import com.xc.x_clone_backend.post.PostRepository;
+import com.xc.x_clone_backend.post.PostService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 @Component
 public class LikeService {
     private final LikeRepository likeRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
 
     @Autowired
-    public LikeService(LikeRepository likeRepository, PostRepository postRepository) {
+    public LikeService(LikeRepository likeRepository, PostService postService) {
         this.likeRepository = likeRepository;
-        this.postRepository = postRepository;
+        this.postService = postService;
     }
 
     public Map<Integer, Long> getLikeCounts() {
@@ -52,7 +52,7 @@ public class LikeService {
             Like newLike = new Like();
             newLike.setPost_id(postId);
             newLike.setUsername(username);
-            newLike.setPoster(postRepository.getPostById(postId).getUsername());
+            newLike.setPoster(postService.getPostById(postId).getUsername());
             newLike.setDate(new Date());
             likeRepository.save(newLike);
             return true;
