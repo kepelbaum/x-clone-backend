@@ -1,4 +1,5 @@
 package com.xc.x_clone_backend.like;
+import com.xc.x_clone_backend.post.PostRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
