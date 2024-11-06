@@ -13,6 +13,7 @@ public class Like {
     private Integer id;
 
     private String username;
+    private String poster;
     private Integer post_id;
     private Date date;
 
@@ -20,11 +21,12 @@ public class Like {
 
     }
 
-    public Like(Integer id, String username, Date date, Integer post_id) {
+    public Like(Integer id, String username, String poster, Date date, Integer post_id) {
         this.id = id;
         this.username = username;
         this.date = date;
         this.post_id = post_id;
+        this.poster = poster;
     }
 
     public Integer getId() {
@@ -41,6 +43,14 @@ public class Like {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
     }
 
     public Integer getPost_id() {

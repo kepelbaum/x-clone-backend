@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 @Component
 public class LikeService {
     private final LikeRepository likeRepository;
+    private final PostRepository PostRepository;
 
     @Autowired
-    public LikeService(LikeRepository likeRepository) {
+    public LikeService(LikeRepository likeRepository, PostRepository postRepository) {
         this.likeRepository = likeRepository;
+        this.postRepository = postRepository;
     }
 
     public Map<Integer, Long> getLikeCounts() {
@@ -29,7 +31,7 @@ public class LikeService {
         Map<Integer, Long> likeCounts = getLikeCounts();
 
         List<Like> notifications = likeRepository.findAll().stream()
-                .filter(like -> username.equals(like.getUsername()))
+                .filter(like -> username.equals(like.getUsername()) || username.equals(like.getPoster()))
                 .collect(Collectors.toList());
 
         response.put("likeCounts", likeCounts);
@@ -49,6 +51,7 @@ public class LikeService {
             Like newLike = new Like();
             newLike.setPost_id(postId);
             newLike.setUsername(username);
+            newLike.setPoster(postRepository.getPostById(postId).getUsername());
             newLike.setDate(new Date());
             likeRepository.save(newLike);
             return true;
