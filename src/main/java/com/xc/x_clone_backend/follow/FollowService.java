@@ -38,7 +38,7 @@ public class FollowService {
         Map<String, Long> followingCounts = getFollowingCounts();
 
         List<Follow> notifications = followRepository.findAll().stream()
-                .filter(follow -> username.equals(follow.getFollowing()))
+                .filter(follow -> username.equals(follow.getFollowing()) || username.equals(follow.getFollower()))
                 .collect(Collectors.toList());
 
         response.put("followerCounts", followerCounts);
