@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Component
 public class LikeService {
     private final LikeRepository likeRepository;
-    private final PostRepository PostRepository;
+    private final PostRepository postRepository;
 
     @Autowired
     public LikeService(LikeRepository likeRepository, PostRepository postRepository) {
