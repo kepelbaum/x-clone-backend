@@ -1,18 +1,3 @@
-package com.xc.x_clone_backend.post;
-
-import com.xc.x_clone_backend.cloudinary.CloudinaryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Date;
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "api/post")
 public class PostController {
@@ -75,6 +60,22 @@ public class PostController {
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
+    @PostMapping("/retweet/{id}")
+    public ResponseEntity<Post> retweet(@PathVariable Integer id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Post originalPost = postService.getPostById(id);
+        Post retweet = new Post();
+        retweet.setContent(originalPost.getContent());
+        retweet.setMedia_url(originalPost.getMedia_url());
+        retweet.setMedia_type(originalPost.getMedia_type());
+        retweet.setUsername(username);
+        retweet.setDate(new Date());
+        retweet.setIfretweet(id);  
+        
+        Post createdRetweet = postService.addPost(retweet);
+        return new ResponseEntity<>(createdRetweet, HttpStatus.CREATED);
+    }
+
     private boolean isValidMediaType(String contentType) {
         if (contentType == null) return false;
         return contentType.startsWith("image/") || contentType.startsWith("video/");
@@ -89,7 +90,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable Integer id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        String postname = postService.getPostById(id).getUsername();
+        String postname = postService.getPostById(id).getUsername();  // Added missing semicolon
         if (username.equals(postname)) {
             postService.deletePost(id);
             List<Post> replies = postService.getRepliesById(id);
