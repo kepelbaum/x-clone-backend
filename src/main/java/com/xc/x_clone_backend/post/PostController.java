@@ -79,6 +79,18 @@ public class PostController {
     public ResponseEntity<Post> retweet(@PathVariable Integer id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Post originalPost = postService.getPostById(id);
+        if (originalPost == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
+        }
+        boolean hasRetweeted = postService.getPosts().stream()
+        .anyMatch(post -> 
+            post.getUsername().equals(username) && 
+            post.getIfretweet() != null && 
+            post.getIfretweet().equals(id)
+        );
+        if (hasRetweeted) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already retweeted");
+        }
         Post retweet = new Post();
         retweet.setContent(originalPost.getContent());
         retweet.setMedia_url(originalPost.getMedia_url());
