@@ -44,13 +44,13 @@ public class PostController {
     public ResponseEntity<Post> createPost(
             @RequestParam("content") String content,
             @RequestParam(value = "ifreply", required = false) Integer ifreply,
-            @RequestParam(value = "ifretweet", required = false) Integer ifretweet,
+            // @RequestParam(value = "ifretweet", required = false) Integer ifretweet,
             @RequestPart(value = "media", required = false) MultipartFile media) {
 
         Post post = new Post();
         post.setContent(content);
         post.setIfReply(ifreply);
-        post.setIfretweet(ifretweet);
+        // post.setIfretweet(ifretweet);
 
         if (media != null && !media.isEmpty()) {
             if (media.getSize() > 30 * 1024 * 1024) {

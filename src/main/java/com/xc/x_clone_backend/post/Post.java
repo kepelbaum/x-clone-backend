@@ -77,7 +77,7 @@ public class Post {
         return ifreply;
     }
 
-    public void setIfReply(Integer ifReply) {
+    public void setIfReply(Integer ifreply) {
         this.ifreply = ifreply;
     }
 
