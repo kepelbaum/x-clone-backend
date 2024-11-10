@@ -115,18 +115,24 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Integer id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        String postname = postService.getPostById(id).getUsername();  // Added missing semicolon
-        if (username.equals(postname)) {
-            postService.deletePost(id);
-            List<Post> replies = postService.getRepliesById(id);
-            for (Post reply : replies) {
-                postService.deletePost(reply.getPost_id());
-            }
-            return new ResponseEntity<>("Post deleted", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Not authorized", HttpStatus.FORBIDDEN);
+public ResponseEntity<String> deletePost(@PathVariable Integer id) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String postname = postService.getPostById(id).getUsername();
+    if (username.equals(postname)) {
+        List<Post> replies = postService.getRepliesById(id);
+        for (Post reply : replies) {
+            postService.deletePost(reply.getPost_id());
         }
+        List<Post> retweets = postService.getPosts().stream()
+            .filter(post -> post.getIfretweet() != null && post.getIfretweet().equals(id))
+            .toList();
+        for (Post retweet : retweets) {
+            postService.deletePost(retweet.getPost_id());
+        }
+        postService.deletePost(id);
+        return new ResponseEntity<>("Post deleted", HttpStatus.OK);
+    } else {
+        return new ResponseEntity<>("Not authorized", HttpStatus.FORBIDDEN);
     }
+}
 }
