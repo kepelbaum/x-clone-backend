@@ -93,6 +93,41 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/testone")
+public ResponseEntity<?> testValidate(@RequestBody User user) {
+    List<String> errors = validateRegistration(user);
+    return ResponseEntity.ok(Map.of(
+        "username", user.getUsername(),
+        "passwordLength", user.getPassword().length(),
+        "errors", errors
+    ));
+}
+
+@PostMapping("/testtwo")
+public ResponseEntity<?> registerUser(@RequestBody User user) {
+    try {
+        List<String> validationErrors;
+        try {
+            validationErrors = validateRegistration(user);
+        } catch (Exception e) {
+            return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", "Validation error: " + e.getMessage()));
+        }
+
+        if (!validationErrors.isEmpty()) {
+            return createErrorResponse(validationErrors);
+        }
+
+        User result = userService.createUser(user);
+        return ResponseEntity.ok(result);
+    } catch (Exception e) {
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(Map.of("error", "Error: " + e.getMessage()));
+    }
+}
+
     @PostMapping("/guest")
     public ResponseEntity<?> guestLogin() {
         try {
@@ -135,11 +170,5 @@ public class AuthController {
                     .body(response);
         }
     }
-
-    @PostMapping("/registertest")
-public ResponseEntity<?> testRegister(@RequestBody User user) {
-    System.out.println("Test with user: " + user.getUsername());
-    return ResponseEntity.ok().body(Map.of("message", "Request from: " + user.getUsername()));
-}
     
 }
