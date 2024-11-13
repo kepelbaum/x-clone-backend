@@ -26,20 +26,13 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void updatePasswordHash(String username, String plainTextPassword) {
-        if (plainTextPassword == null || plainTextPassword.isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be empty");
-        }
-
-        User user = userRepository.findById(username)
-                .orElseGet(() -> {
-                    User newUser = new User();
-                    newUser.setUsername(username);
-                    return newUser;
-                });
-        user.setPassword(passwordEncoder.encode(plainTextPassword));
-        userRepository.save(user);
-    }
+public void updatePasswordHash(String username, String plainTextPassword) {
+    User user = userRepository.findById(username)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            
+    user.setPassword(passwordEncoder.encode(plainTextPassword));
+    userRepository.save(user);
+}
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -68,7 +61,7 @@ public class UserService implements UserDetailsService {
 
     public User updateUser(User updatedUser) {
         Optional<User> existingUser = userRepository.findById(updatedUser.getUsername());
-
+    
         if (existingUser.isPresent()) {
             User userToUpdate = existingUser.get();
             
@@ -77,19 +70,12 @@ public class UserService implements UserDetailsService {
                 userToUpdate.setDisplayname(updatedUser.getDisplayname());
             }
             
-            if (updatedUser.getPassword() != null) {
-                if (updatedUser.getPassword().isEmpty()) {
-                    throw new IllegalArgumentException("Password cannot be empty");
-                }
-                userToUpdate.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            }
-            
             if (updatedUser.getAboutme() != null) userToUpdate.setAboutme(updatedUser.getAboutme());
             if (updatedUser.getAvatar() != null) userToUpdate.setAvatar(updatedUser.getAvatar());
             if (updatedUser.getLocation() != null) userToUpdate.setLocation(updatedUser.getLocation());
             if (updatedUser.getIfcheckmark() != null) userToUpdate.setIfcheckmark(updatedUser.getIfcheckmark());
             if (updatedUser.getBackground() != null) userToUpdate.setBackground(updatedUser.getBackground());
-
+    
             return userRepository.save(userToUpdate);
         }
         return null;

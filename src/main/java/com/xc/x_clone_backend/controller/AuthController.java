@@ -135,5 +135,40 @@ public class AuthController {
                     .body(response);
         }
     }
+
+    @PutMapping("/password")
+public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> passwordUpdate) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String password = passwordUpdate.get("password");
+    
+    List<String> errors = new ArrayList<>();
+    
+    if (password.length() < 4 || password.length() > 15) {
+        errors.add("Password must be between 4 and 15 characters");
+    }
+
+    if (!password.matches(".*[A-Z].*")) {
+        errors.add("Password must contain at least one uppercase letter");
+    }
+
+    if (!password.matches(".*\\d.*")) {
+        errors.add("Password must contain at least one number");
+    }
+
+    if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+        errors.add("Password must contain at least one special character");
+    }
+
+    if (!errors.isEmpty()) {
+        return createErrorResponse(errors);
+    }
+
+    try {
+        userService.updatePasswordHash(username, password);
+        return ResponseEntity.ok().build();
+    } catch (IllegalArgumentException e) {
+        return createErrorResponse(Arrays.asList(e.getMessage()));
+    }
+}
     
 }
