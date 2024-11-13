@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +48,17 @@ public class AuthController {
             errors.add("Username must be between 4 and 15 characters");
         }
 
-        // Password validation
+        if (!username.matches("^[A-Za-z0-9_]+$")) {
+            errors.add("Username can only contain letters, numbers, and underscores");
+        }
+
         String password = user.getPassword();
         if (password.length() < 4 || password.length() > 15) {
             errors.add("Password must be between 4 and 15 characters");
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            errors.add("Password must contain at least one uppercase letter");
         }
 
         if (!password.matches(".*\\d.*")) {
@@ -76,16 +84,17 @@ public class AuthController {
         if (!validationErrors.isEmpty()) {
             return createErrorResponse(validationErrors);
         }
-
-        User result = userService.createUser(user);
-        return ResponseEntity.ok(result);
+        try {
+            User result = userService.createUser(user);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return createErrorResponse(Arrays.asList(e.getMessage()));
+        }
     }
 
-    // Guest login endpoint
     @PostMapping("/guest")
     public ResponseEntity<?> guestLogin() {
         try {
-            // Create authentication for guest user without password verification
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     "newestuser",
                     null,
