@@ -164,7 +164,7 @@ public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> passwor
     }
 
     try {
-        const result = userService.updatePasswordHash(username, password);
+        User result = userService.updatePasswordHash(username, password);
         return ResponseEntity.ok(result);
     } catch (IllegalArgumentException e) {
         return createErrorResponse(Arrays.asList(e.getMessage()));
