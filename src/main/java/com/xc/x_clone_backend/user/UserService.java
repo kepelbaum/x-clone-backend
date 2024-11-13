@@ -23,8 +23,31 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private void validatePassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+
+        if (password.length() < 10) {
+            throw new IllegalArgumentException("Password must be at least 10 characters long");
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            throw new IllegalArgumentException("Password must contain at least one uppercase letter");
+        }
+
+        if (!password.matches(".*[0-9].*")) {
+            throw new IllegalArgumentException("Password must contain at least one number");
+        }
+
+        if (!password.matches(".*[!@#$%^&*()\\[\\]{}\\-_+=<>,./?].*")) {
+            throw new IllegalArgumentException("Password must contain at least one special character (!@#$%^&*()[]{}-_+=<>,./)");
+        }
+    }
+
     @Transactional
     public void updatePasswordHash(String username, String plainTextPassword) {
+        validatePassword(plainTextPassword);
         User user = userRepository.findById(username)
                 .orElseGet(() -> {
                     User newUser = new User();
@@ -45,6 +68,7 @@ public class UserService implements UserDetailsService {
 
     public User createUser(User user) {
         validateUsername(user.getUsername());
+        validatePassword(user.getPassword());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setDisplayname(user.getUsername());
         user.setDate(new Date());
@@ -65,13 +89,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    private void validateDisplayname(String username) {
-        if (username.isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be empty");
+    private void validateDisplayname(String displayname) {
+        if (displayname == null || displayname.isEmpty()) {
+            throw new IllegalArgumentException("Display name cannot be empty");
         }
 
-        if (username.length() > 50) {
-            throw new IllegalArgumentException("Username must not exceed 50 characters");
+        if (displayname.length() > 50) {
+            throw new IllegalArgumentException("Display name must not exceed 50 characters");
         }
     }
 
@@ -80,17 +104,24 @@ public class UserService implements UserDetailsService {
 
         if (existingUser.isPresent()) {
             User userToUpdate = existingUser.get();
-            validateDisplayname(userToUpdate.getDisplayname());
+            
+            if (updatedUser.getDisplayname() != null) {
+                validateDisplayname(updatedUser.getDisplayname());
+                userToUpdate.setDisplayname(updatedUser.getDisplayname());
+            }
+            
+            if (updatedUser.getPassword() != null) {
+                validatePassword(updatedUser.getPassword());
+                userToUpdate.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
+            
             if (updatedUser.getAboutme() != null) userToUpdate.setAboutme(updatedUser.getAboutme());
             if (updatedUser.getAvatar() != null) userToUpdate.setAvatar(updatedUser.getAvatar());
             if (updatedUser.getLocation() != null) userToUpdate.setLocation(updatedUser.getLocation());
             if (updatedUser.getIfcheckmark() != null) userToUpdate.setIfcheckmark(updatedUser.getIfcheckmark());
-            if (updatedUser.getPassword() != null) userToUpdate.setPassword(passwordEncoder.encode(updatedUser.getPassword()));;
             if (updatedUser.getBackground() != null) userToUpdate.setBackground(updatedUser.getBackground());
-            if (updatedUser.getDisplayname() != null) userToUpdate.setDisplayname(updatedUser.getDisplayname());
 
-            userRepository.save(userToUpdate);
-            return userToUpdate;
+            return userRepository.save(userToUpdate);
         }
         return null;
     }
