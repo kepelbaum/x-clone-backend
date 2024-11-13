@@ -95,6 +95,7 @@ public class AuthController {
 
     @PostMapping("/testone")
 public ResponseEntity<?> testValidate(@RequestBody User user) {
+    System.out.println("Received - Username: " + user.getUsername() + ", Password: " + user.getPassword());
     List<String> errors = validateRegistration(user);
     return ResponseEntity.ok(Map.of(
         "username", user.getUsername(),
@@ -105,6 +106,7 @@ public ResponseEntity<?> testValidate(@RequestBody User user) {
 
 @PostMapping("/testtwo")
 public ResponseEntity<?> registerUserr(@RequestBody User user) {
+    System.out.println("Received - Username: " + user.getUsername() + ", Password: " + user.getPassword());
     try {
         List<String> validationErrors;
         try {
