@@ -29,7 +29,7 @@ public class    User {
 
     private Date date;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     public User() {
