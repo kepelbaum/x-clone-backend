@@ -104,7 +104,7 @@ public ResponseEntity<?> testValidate(@RequestBody User user) {
 }
 
 @PostMapping("/testtwo")
-public ResponseEntity<?> registerUser(@RequestBody User user) {
+public ResponseEntity<?> registerUserr(@RequestBody User user) {
     try {
         List<String> validationErrors;
         try {
