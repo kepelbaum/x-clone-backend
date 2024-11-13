@@ -93,43 +93,6 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/testone")
-public ResponseEntity<?> testValidate(@RequestBody User user) {
-    System.out.println("Received - Username: " + user.getUsername() + ", Password: " + user.getPassword());
-    List<String> errors = validateRegistration(user);
-    return ResponseEntity.ok(Map.of(
-        "username", user.getUsername(),
-        "passwordLength", user.getPassword().length(),
-        "errors", errors
-    ));
-}
-
-@PostMapping("/testtwo")
-public ResponseEntity<?> registerUserr(@RequestBody User user) {
-    System.out.println("Received - Username: " + user.getUsername() + ", Password: " + user.getPassword());
-    try {
-        List<String> validationErrors;
-        try {
-            validationErrors = validateRegistration(user);
-        } catch (Exception e) {
-            return ResponseEntity
-                .badRequest()
-                .body(Map.of("error", "Validation error: " + e.getMessage()));
-        }
-
-        if (!validationErrors.isEmpty()) {
-            return createErrorResponse(validationErrors);
-        }
-
-        User result = userService.createUser(user);
-        return ResponseEntity.ok(result);
-    } catch (Exception e) {
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(Map.of("error", "Error: " + e.getMessage()));
-    }
-}
-
     @PostMapping("/guest")
     public ResponseEntity<?> guestLogin() {
         try {
