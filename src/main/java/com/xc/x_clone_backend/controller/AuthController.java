@@ -135,4 +135,11 @@ public class AuthController {
                     .body(response);
         }
     }
+
+    @PostMapping("/registertest")
+public ResponseEntity<?> testRegister(@RequestBody User user) {
+    System.out.println("Test with user: " + user.getUsername());
+    return ResponseEntity.ok().body(Map.of("message", "Request from: " + user.getUsername()));
+}
+    
 }
