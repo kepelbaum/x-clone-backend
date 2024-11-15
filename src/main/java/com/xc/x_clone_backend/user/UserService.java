@@ -25,8 +25,20 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private static final String DEFAULT_AVATAR = "https://res.cloudinary.com/dxbkraqxl/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1731713054/defaultcat_rlzmys.webp";
+    private static final String DEFAULT_BACKGROUND = "https://res-console.cloudinary.com/dxbkraqxl/thumbnails/v1/image/upload/v1724384087/NTM2NGJiOWQyNzBhMzdkMmIxMjQ3M2E3N2Y2MTRhYmU=/template_primary/d18xMDAwLGFyXzE2OjksY19maWxsLGdfYXV0byxlX3NoYXJwZW4=";
+
+    private boolean isValidUrl(String urlString) {
+        try {
+            new URL(urlString);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+    }
+
     @Transactional
-public void updatePasswordHash(String username, String plainTextPassword) {
+    public void updatePasswordHash(String username, String plainTextPassword) {
     User user = userRepository.findById(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
             
@@ -42,13 +54,6 @@ public void updatePasswordHash(String username, String plainTextPassword) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setDisplayname(user.getUsername());
-        user.setDate(new Date());
-        return userRepository.save(user);
-    }
-
     private void validateDisplayname(String displayname) {
         if (displayname == null || displayname.isEmpty()) {
             throw new IllegalArgumentException("Display name cannot be empty");
@@ -57,6 +62,15 @@ public void updatePasswordHash(String username, String plainTextPassword) {
         if (displayname.length() > 50) {
             throw new IllegalArgumentException("Display name must not exceed 50 characters");
         }
+    }
+
+    public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setDisplayname(user.getUsername());
+        user.setDate(new Date());
+        user.setAvatar(DEFAULT_AVATAR);     
+        user.setBackground(DEFAULT_BACKGROUND);  
+        return userRepository.save(user);
     }
 
     public User updateUser(User updatedUser) {
@@ -76,6 +90,13 @@ public void updatePasswordHash(String username, String plainTextPassword) {
             if (updatedUser.getIfcheckmark() != null) userToUpdate.setIfcheckmark(updatedUser.getIfcheckmark());
             if (updatedUser.getBackground() != null) userToUpdate.setBackground(updatedUser.getBackground());
     
+            if (updatedUser.getAvatar() != null && isValidUrl(updatedUser.getAvatar())) {
+                userToUpdate.setAvatar(updatedUser.getAvatar());
+            }
+            if (updatedUser.getBackground() != null && isValidUrl(updatedUser.getBackground())) {
+                userToUpdate.setBackground(updatedUser.getBackground());
+            }
+
             return userRepository.save(userToUpdate);
         }
         return null;
