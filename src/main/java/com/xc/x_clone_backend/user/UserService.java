@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import java.net.URL;
+import java.net.MalformedURLException;
+
 @Component
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
