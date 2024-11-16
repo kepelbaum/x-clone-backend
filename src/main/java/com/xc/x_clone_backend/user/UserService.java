@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     private static final String DEFAULT_AVATAR = "https://res.cloudinary.com/dxbkraqxl/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1731713054/defaultcat_rlzmys.webp";
-    private static final String DEFAULT_BACKGROUND = "https://res-console.cloudinary.com/dxbkraqxl/thumbnails/v1/image/upload/v1724384087/NTM2NGJiOWQyNzBhMzdkMmIxMjQ3M2E3N2Y2MTRhYmU=/template_primary/d18xMDAwLGFyXzE2OjksY19maWxsLGdfYXV0byxlX3NoYXJwZW4=";
+    private static final String DEFAULT_BACKGROUND = "https://res.cloudinary.com/dxbkraqxl/image/upload/v1731721571/photo-1438449805896-28a666819a20_di1njz.jpg";
 
     private boolean isValidUrl(String urlString) {
         try {
