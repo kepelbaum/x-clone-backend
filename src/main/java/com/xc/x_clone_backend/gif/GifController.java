@@ -16,12 +16,18 @@ public class GifController {
     
     private final WebClient webClient;
     
+    @Autowired
     public GifController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://api.giphy.com/v1/gifs").build();
     }
     
-    @GetMapping("/")
+    @GetMapping
     public Mono<GiphyResponse> getTrending() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        System.out.println("Authenticated user: " + username);
+
         return webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/trending")
@@ -46,6 +52,11 @@ public class GifController {
             .retrieve()
             .bodyToMono(GiphyResponse.class);
     }
+    @GetMapping("/test")
+public ResponseEntity<String> test() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return new ResponseEntity<>("Authenticated as: " + auth.getName(), HttpStatus.OK);
+}
 }
 
 
