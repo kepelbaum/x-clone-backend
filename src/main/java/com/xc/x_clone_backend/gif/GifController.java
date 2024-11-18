@@ -28,11 +28,6 @@ public class GifController {
     
     @GetMapping
     public ResponseEntity<GiphyResponse> getTrending() {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        System.out.println("Authenticated user: " + username);
-
         GiphyResponse response = webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/trending")
@@ -48,8 +43,8 @@ public class GifController {
     }
     
     @GetMapping("/search")
-    public Mono<GiphyResponse> searchGifs(@RequestParam String query) {
-        return webClient.get()
+    public ResponseEntity<GiphyResponse> searchGifs(@RequestParam String query) {
+        GiphyResponse response = webClient.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/search")
                 .queryParam("api_key", giphyApiKey)
@@ -58,8 +53,11 @@ public class GifController {
                 .queryParam("rating", "pg-13")
                 .build())
             .retrieve()
-            .bodyToMono(GiphyResponse.class);
-    }
+            .bodyToMono(GiphyResponse.class)
+            .block();
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+    }   
 }
 
 
