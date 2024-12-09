@@ -1,1 +1,1 @@
-Frontend code: https://github.com/kepelbaum/x-clone-frontend
+Frontend code and project details: https://github.com/kepelbaum/x-clone-frontend
