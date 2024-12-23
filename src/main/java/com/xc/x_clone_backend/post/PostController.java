@@ -70,7 +70,7 @@ public class PostController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         post.setUsername(username);
         // post.setDate(new Date());
-        post.setDate(Date.from(offsetDateTime.toInstant()));
+        post.setDate(Date.from(java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC).toInstant()));
 
         Post createdPost = postService.addPost(post);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
